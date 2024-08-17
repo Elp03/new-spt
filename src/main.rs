@@ -59,16 +59,13 @@ async fn main() {
     let history = spotify.current_playback(None, None::<Vec<_>>);
     println!("Response after refreshing token: {history:?}");
 
-let mut user_playlists: Vec<SimplifiedPlaylist> = Vec::new();
+    let mut user_playlists: Vec<SimplifiedPlaylist> = Vec::new();
     //let user_playlist = *spotify.current_user_playlists();
     for playlist in spotify.current_user_playlists() {
         match playlist {
             Ok(data) => user_playlists.push(data), 
             Err(e) => println!("{:#?}", e)
         }
-
-
     }
-
     println!("This is current users playlists {:?}", user_playlists); 
 }
