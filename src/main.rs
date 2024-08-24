@@ -1,6 +1,6 @@
 #![allow(clippy::assigning_clones)]
 
-use rspotify::{model::{playlist, user, SimplifiedPlaylist, Type, UserId}, prelude::*, scopes, AuthCodePkceSpotify, Credentials, OAuth};
+use rspotify::{model::{artist, playlist, user, Market, SearchResult, SearchType, SimplifiedPlaylist, Type, UserId}, prelude::*, scopes, AuthCodePkceSpotify, Credentials, OAuth};
 
 #[tokio::main]
 async fn main() {
@@ -67,5 +67,49 @@ async fn main() {
             Err(e) => println!("{:#?}", e)
         }
     }
-    println!("This is current users playlists {:?}", user_playlists); 
+   // println!("This is current users playlists {:?}", user_playlists); 
+   
+    let search_query = "Paleale royal"; 
+    let mut search_result: Vec<SearchResult> = Vec::new();
+
+    let seartch_spotify = spotify.search(&search_query, SearchType::Artist, None, None, Some(1), None); 
+    match seartch_spotify {
+        Ok(SearchResult::Artists(artist_page)) => {
+            if let Some(artist) = artist_page.items.get(0) {
+                println!("Artist found: {}", artist.name);
+                println!("Popularity: {}", artist.popularity);
+                println!("Followers: {}", artist.followers.total);
+                println!("Genres: {:?}", artist.genres);
+            } else {
+                println!("No artist found with the name '{}'", search_query);
+            }
+        },
+        Ok(SearchResult::Albums(albums)) => {
+            println!("Albums found: {}", albums.items.len());
+        },
+        Ok(SearchResult::Tracks(tracks)) => {
+            println!("Tracks found: {}", tracks.items.len());
+        },
+        Ok(SearchResult::Playlists(playlists)) => {
+            println!("Playlists found: {}", playlists.items.len());
+        },
+        Ok(SearchResult::Shows(shows)) => {
+            println!("Shows found: {}", shows.items.len());
+        },
+        Ok(SearchResult::Episodes(episodes)) => {
+            println!("Episodes found: {}", episodes.items.len());
+        },
+        Err(e) => println!("{:#?}", e)
+    }
+    
+    // for playlist in spotify.search(&search_query, SearchType::Artist, None, None, Some(1), None) {
+    //     match playlist {
+    //         Ok(data) => search_result.push(data), 
+    //         Err(e) => println!("{:#?}", e)
+    //     }
+    // }
+
+
+    println!("This is search {:?}", search_result); 
+
 }
